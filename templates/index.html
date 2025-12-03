@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MATRIX NMAP SCANNER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <!-- Matrix Rain Canvas -->
+    <canvas id="matrix-rain"></canvas>
+    
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo-container">
+                <div class="logo-text">
+                    <span class="bracket">[</span>
+                    <span class="logo-main">NMAP</span>
+                    <span class="bracket">]</span>
+                </div>
+                <div class="logo-subtitle">NETWORK SCANNER v1.0</div>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot {% if nmap_available %}online{% else %}offline{% endif %}"></span>
+                <span class="status-text">
+                    {% if nmap_available %}NMAP READY{% else %}NMAP NOT FOUND{% endif %}
+                </span>
+            </div>
+        </header>
+
+        <!-- Target Display -->
+        <section class="target-section">
+            <div class="section-header">
+                <span class="icon">◉</span>
+                <span>TARGET DESIGNATION</span>
+            </div>
+            <div class="target-display">
+                <div class="target-label">APPROVED LAB TARGET:</div>
+                <div class="target-value" id="target-host">{{ target }}</div>
+                <div class="target-warning">
+                    <span class="warning-icon">⚠</span>
+                    Only scan targets you have permission to test
+                </div>
+            </div>
+        </section>
+
+        <!-- Scan Options -->
+        <section class="options-section">
+            <div class="section-header">
+                <span class="icon">◈</span>
+                <span>SCAN PARAMETERS</span>
+            </div>
+            <div class="options-grid">
+                {% for key, opt in options.items() %}
+                <div class="option-card" data-option="{{ key }}">
+                    <label class="option-toggle">
+                        <input type="checkbox" 
+                               name="scan-option" 
+                               value="{{ key }}" 
+                               {% if opt.default %}checked{% endif %}>
+                        <span class="toggle-track">
+                            <span class="toggle-thumb"></span>
+                        </span>
+                        <span class="option-info">
+                            <span class="option-label">{{ opt.label }}</span>
+                            <span class="option-desc">{{ opt.description }}</span>
+                            <span class="option-flag">{{ opt.flag }}</span>
+                        </span>
+                    </label>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Scan Controls -->
+        <section class="controls-section">
+            <button id="scan-btn" class="scan-button" {% if not nmap_available %}disabled{% endif %}>
+                <span class="btn-icon">▶</span>
+                <span class="btn-text">INITIATE SCAN</span>
+                <span class="btn-loading">
+                    <span class="spinner"></span>
+                    SCANNING...
+                </span>
+            </button>
+            <div class="command-preview">
+                <span class="preview-label">COMMAND:</span>
+                <code id="command-preview">nmap --top-ports 100 -sV -T4 {{ target }}</code>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results-section">
+            <div class="section-header">
+                <span class="icon">◎</span>
+                <span>SCAN RESULTS</span>
+                <span class="scan-time" id="scan-time"></span>
+            </div>
+            
+            <!-- Results Summary -->
+            <div class="results-summary" id="results-summary">
+                <div class="summary-card">
+                    <div class="summary-value" id="ports-found">--</div>
+                    <div class="summary-label">PORTS OPEN</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-value" id="services-found">--</div>
+                    <div class="summary-label">SERVICES</div>
+                </div>
+                <div class="summary-card os-card">
+                    <div class="summary-value" id="os-detected">--</div>
+                    <div class="summary-label">OS DETECTED</div>
+                </div>
+            </div>
+
+            <!-- Port Table -->
+            <div class="ports-table-container">
+                <table class="ports-table" id="ports-table">
+                    <thead>
+                        <tr>
+                            <th>PORT</th>
+                            <th>STATE</th>
+                            <th>PROTOCOL</th>
+                            <th>SERVICE / VERSION</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ports-tbody">
+                        <tr class="placeholder-row">
+                            <td colspan="4">Awaiting scan initiation...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Raw Output Toggle -->
+            <div class="raw-output-section">
+                <button class="raw-toggle" id="raw-toggle">
+                    <span class="toggle-icon">▼</span>
+                    SHOW RAW OUTPUT
+                </button>
+                <div class="raw-output" id="raw-output">
+                    <pre id="raw-content">No scan data available.</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-text">
+                <span class="matrix-symbol">⬡</span>
+                AUTHORIZED ACCESS ONLY
+                <span class="matrix-symbol">⬡</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
