@@ -5,9 +5,11 @@ A Matrix-themed web interface for running nmap scans on **authorized lab targets
 ![Python](https://img.shields.io/badge/python-3.8+-blue)
 ![Flask](https://img.shields.io/badge/flask-3.0-green)
 
-## Screenshot
+## Screenshots
 
-![Matrix Nmap Scanner](screenshot.png)
+![Matrix Nmap Scanner](Screenshot%201.png)
+
+![Scan Results](Screenshot%202.png)
 
 ## Features
 
